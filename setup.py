@@ -8,7 +8,7 @@ with open('README.rst') as readme_file:
 
 setup(
     name='turtl-backup',
-    version='0.0.1',
+    version='0.0.2',
     description="Tool to backup a turtl account.",
     long_description=readme,
     author="Julien Palard",
