@@ -16,9 +16,10 @@ setup(
     url='https://github.com/JulienPalard/turtle-backup',
     entry_points={
         'console_scripts': [
-            'turtl-backup=turtl_backup:main'
+            'turtl-backup=turtl_backup.turtl_backup:main'
         ]
     },
+    packages=['turtl_backup'],
     install_requires=[
         'requests',
         'cryptography'
