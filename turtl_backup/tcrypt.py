@@ -4,9 +4,9 @@ https://github.com/turtl/js/blob/2a68d3558abae0d875eb93d219de93f7b1573556/librar
 for use with turtl_backup.
 """
 
-from base64 import b64decode
 import math
 import os
+from base64 import b64decode
 
 from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes

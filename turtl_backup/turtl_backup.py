@@ -3,15 +3,15 @@
 Backups are downloaded encrypted so they can be archived safely.
 """
 
-from base64 import b64encode, b64decode
+from base64 import b64decode, b64encode
 from getpass import getpass
 from hashlib import pbkdf2_hmac, sha256
-from turtl_backup.turtl import Turtl
 from urllib.parse import urljoin
 
 import requests
 
 from turtl_backup import tcrypt
+from turtl_backup.turtl import Turtl
 
 
 def parse_args():

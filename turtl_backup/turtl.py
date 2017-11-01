@@ -4,8 +4,9 @@ saving them to a hierarchy of files (exporting).
 
 import json
 import os
-from collections import defaultdict
 from base64 import b64decode
+from collections import defaultdict
+
 from turtl_backup import tcrypt
 
 
