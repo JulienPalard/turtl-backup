@@ -61,7 +61,7 @@ def get_key(username, password):
 
 
 def get_auth(username, password, version=tcrypt.VERSION):
-    """Get a basic authorization token for the given username and
+    """Get a authorization token for the given username and
     password, which is:
 
     login:password encrypted using AES-GCM with a key derived from the
