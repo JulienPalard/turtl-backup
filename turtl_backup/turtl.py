@@ -6,7 +6,7 @@ import json
 import os
 from collections import defaultdict
 from base64 import b64decode
-from tcrypt import tcrypt
+from turtl_backup import tcrypt
 
 
 def _try_to_decode(some_bytes):

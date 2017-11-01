@@ -6,12 +6,12 @@ Backups are downloaded encrypted so they can be archived safely.
 from base64 import b64encode, b64decode
 from getpass import getpass
 from hashlib import pbkdf2_hmac, sha256
-from turtl.turtl import Turtl
+from turtl_backup.turtl import Turtl
 from urllib.parse import urljoin
 
 import requests
 
-from tcrypt import tcrypt
+from turtl_backup import tcrypt
 
 
 def parse_args():

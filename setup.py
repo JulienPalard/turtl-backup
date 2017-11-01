@@ -19,7 +19,7 @@ setup(
             'turtl-backup=turtl_backup.turtl_backup:main'
         ]
     },
-    packages=['turtl_backup', 'tcrypt'],
+    packages=['turtl_backup'],
     install_requires=[
         'requests',
         'cryptography'
