@@ -46,7 +46,7 @@ def deserialize(headers_and_ciphertext: bytes):
     version_high_bit = headers_and_ciphertext[0] << 8
     version_low_bits = headers_and_ciphertext[1]
     version = version_high_bit | version_low_bits
-    assert version == 5
+    assert version == 5, version
     len_desc = headers_and_ciphertext[2]
     assert len_desc == 2
     cipher_id = headers_and_ciphertext[3]
@@ -58,6 +58,7 @@ def deserialize(headers_and_ciphertext: bytes):
 
 def decrypt(key, headers_and_ciphertext):
     """Implementation of tcrypt decrypt, only supporting version 5 AES GCM.
+    The tag is concatenated at the end of the ciphertext by sjcl.
     """
     headers_and_cipherbytes = b64decode(headers_and_ciphertext)
     version, cipher, block_mode, iv, ciphertext = deserialize(

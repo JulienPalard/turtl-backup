@@ -3,9 +3,10 @@
 Backups are downloaded encrypted so they can be archived safely.
 """
 
-from base64 import b64encode
+from base64 import b64encode, b64decode
 from getpass import getpass
 from hashlib import pbkdf2_hmac, sha256
+from turtl.turtl import Turtl
 from urllib.parse import urljoin
 
 import requests
@@ -39,6 +40,14 @@ def parse_args():
     backup.add_argument(
         'dest',
         help='Destination file, where your notes will be stored encrypted')
+    export = subparsers.add_parser(
+        'export',
+        help='Decrypt and export all notes in the given directory.')
+    export.add_argument('backup_file',
+                        help='Backup file to decrypt.')
+    export.add_argument('export_directory',
+                        help='Root directory for exported notes')
+    export.set_defaults(subparser='export')
     return parser.parse_args()
 
 
@@ -83,6 +92,11 @@ def main():
     args = parse_args()
     if args.subparser == 'get_auth_token':
         print(get_auth(input('username: '), getpass('password: ')).decode())
+        exit(0)
+    if args.subparser == 'export':
+        turtl = Turtl.from_file(args.backup_file)
+        turtl.master_key = get_key(input('username: '), getpass('password: '))
+        turtl.save_all_notes(args.export_directory)
         exit(0)
     if args.subparser == 'backup':
         if args.auth_token:
