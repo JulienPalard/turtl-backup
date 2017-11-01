@@ -15,6 +15,7 @@ VERSION = 5
 CIPHERS = ['AES']
 BLOCK_MODES = ['CBC', 'GCM']
 
+
 def encrypt(key, plaintext, utf8_random, iv=None, associated_data=None):
     """Encrypt as done in Turtl: AES GCM with a prefix telling if it's
     UTF8 or binary,

@@ -3,7 +3,7 @@
 Backups are downloaded encrypted so they can be archived safely.
 """
 
-from base64 import b64decode, b64encode
+from base64 import b64encode
 from getpass import getpass
 from hashlib import pbkdf2_hmac, sha256
 from urllib.parse import urljoin
