@@ -54,4 +54,4 @@ backup --auth-token YOUR_AUTH_TOKEN``.
 
 > Is it possible to decrypt my notes using my ``auth_token``?
 
-No, you'll your login and password again.
+No, you'll need your login and password again.
