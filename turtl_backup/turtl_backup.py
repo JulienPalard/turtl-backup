@@ -48,7 +48,11 @@ def parse_args():
     export.add_argument('export_directory',
                         help='Root directory for exported notes')
     export.set_defaults(subparser='export')
-    return parser.parse_args()
+    args = parser.parse_args()
+    if not hasattr(args, 'subparser'):
+        parser.print_help()
+        exit(1)
+    return args
 
 
 def get_key(username, password):
