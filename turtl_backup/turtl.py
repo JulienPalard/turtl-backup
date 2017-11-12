@@ -61,6 +61,7 @@ class Turtl:
         """Decrypt and save all notes as a file hierarchy under the given
         root_directory.
         """
+        os.makedirs(root_directory, mode=0o700, exist_ok=True)
         for note in self.records_by_type['note'].values():
             note_json = os.path.join(root_directory, note['item_id'] + '.json')
             with open(note_json, 'w') as note_json_file:
