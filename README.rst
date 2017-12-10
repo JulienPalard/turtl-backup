@@ -16,7 +16,12 @@ You can instal ``turtl-backup`` using pip::
 Usage
 -----
 
-Here's the usage::
+There's a graphical user interface::
+
+  turtl-backup-gui
+
+
+And a command line tool, here's its usage::
 
   usage: turtl-backup [-h] {backup,get_auth_token,export} ...
 
