@@ -2,24 +2,24 @@
 """
 
 import os
-from datetime import date
 import tkinter as tk
 import tkinter.filedialog as tkFileDialog
 import tkinter.messagebox as tkMessageBox
-from urllib.parse import urljoin
+from datetime import date
 
 import requests
+
 from turtl_backup import turtl_backup
 
 
 class TurtlBackupGUI(tk.Frame):
     """GUI to backup a Turtl account.
     """
+
     def __init__(self, master=None):
         super().__init__(master)
         self.pack()
         self.create_widgets()
-
 
     def create_widgets(self):
         """Creates the Layout, like:
@@ -52,10 +52,8 @@ class TurtlBackupGUI(tk.Frame):
         username = self.entry_user.get()
         password = self.entry_password.get()
         auth = turtl_backup.get_auth(username, password)
-        basic_auth = turtl_backup.build_basic_auth(auth)
         try:
-            response = requests.get(urljoin(server, '/sync/full'),
-                                    headers={'authorization': basic_auth})
+            response = turtl_backup.fetch_backup(auth, server)
             response.raise_for_status()
         except requests.exceptions.RequestException as err:
             tkMessageBox.showerror("Error", str(err), parent=self)

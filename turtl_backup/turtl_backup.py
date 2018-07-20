@@ -22,7 +22,7 @@ def parse_args():
         description='Backup a turtl account.')
     subparsers = parser.add_subparsers(
         help="Backup can be done with a login/password pair or "
-        "using an auth token.")
+             "using an auth token.")
     backup = subparsers.add_parser(
         'backup',
         help='Backup a turtl account (with a password or an auth token)')
@@ -36,7 +36,7 @@ def parse_args():
         help="Use this auth token, instead of typing login/password.")
     backup.add_argument(
         'server', help='Your turtle server API, '
-        'like "https://api.framanotes.org"')
+                       'like "https://api.framanotes.org"')
     backup.add_argument(
         'dest',
         help='Destination file, where your notes will be stored encrypted')
@@ -90,28 +90,50 @@ def build_basic_auth(auth_token):
     return 'Basic ' + b64encode(b'user:' + auth_token).decode()
 
 
+def get_auth_token():
+    print(get_auth(input('username: '), getpass('password: ')).decode())
+
+
+def export(args):
+    turtl = Turtl.from_file(args.backup_file)
+    user = input('username: ')
+    password = getpass('password: ')
+    turtl.master_key = get_key(user, password)
+    try:
+        turtl.save_all_notes(args.export_directory)
+    except Exception as e:
+        print("Cannot export :(")
+        print(e)
+
+
+def fetch_backup(auth, server, path='sync/full'):
+    basic_auth = build_basic_auth(auth)
+    url = urljoin(server, path)
+    headers = {'Authorization': basic_auth}
+    return requests.get(url, headers=headers)
+
+
+def backup(args):
+    if args.auth_token:
+        auth = args.auth_token.encode()
+    else:
+        auth = get_auth(input('username: '), getpass('password: '))
+    response = fetch_backup(auth, args.server)
+    with open(args.dest, 'w') as dest:
+        dest.write(response.text)
+
+
 def main():
     """Module entry point.
     """
     args = parse_args()
-    if args.subparser == 'get_auth_token':
-        print(get_auth(input('username: '), getpass('password: ')).decode())
-        exit(0)
-    if args.subparser == 'export':
-        turtl = Turtl.from_file(args.backup_file)
-        turtl.master_key = get_key(input('username: '), getpass('password: '))
-        turtl.save_all_notes(args.export_directory)
-        exit(0)
-    if args.subparser == 'backup':
-        if args.auth_token:
-            auth = args.auth_token.encode()
-        else:
-            auth = get_auth(input('username: '), getpass('password: '))
-        basic_auth = build_basic_auth(auth)
-        response = requests.get(urljoin(args.server, '/sync/full'),
-                                headers={'authorization': basic_auth})
-        with open(args.dest, 'w') as dest:
-            dest.write(response.text)
+    action = args.subparser
+    if action == 'get_auth_token':
+        get_auth_token()
+    elif action == 'export':
+        export(args)
+    elif action == 'backup':
+        backup(args)
 
 
 if __name__ == '__main__':

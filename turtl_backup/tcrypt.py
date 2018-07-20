@@ -52,8 +52,8 @@ def deserialize(headers_and_ciphertext: bytes):
     assert len_desc == 2
     cipher_id = headers_and_ciphertext[3]
     block_id = headers_and_ciphertext[4]
-    iv = headers_and_ciphertext[5:5+16]
-    ciphertext = headers_and_ciphertext[5+16:]
+    iv = headers_and_ciphertext[5:5 + 16]
+    ciphertext = headers_and_ciphertext[5 + 16:]
     return (version, CIPHERS[cipher_id], BLOCK_MODES[block_id], iv, ciphertext)
 
 

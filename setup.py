@@ -1,32 +1,12 @@
 #!/usr/bin/env python3
 
-import sys
-from cx_Freeze import setup, Executable
+from setuptools import setup
 
-with open('README.rst') as readme_file:
+with open('README.md') as readme_file:
     readme = readme_file.read()
-
-# Dependencies are automatically detected, but it might need
-# fine tuning.
-buildOptions = {'packages': ['queue',
-                             'idna.idnadata',
-                             '_cffi_backend'],
-                'include_files': [(sys.executable.replace(
-                    'bin/python3',
-                    'lib/python3.6/site-packages/.libs_cffi_backend/libffi-bce22613.so.6.0.4'),
-                                   'lib/.libs_cffi_backend/libffi-bce22613.so.6.0.4')],
-                'excludes': []}
-
-base = 'Win32GUI' if sys.platform=='win32' else None
-
-executables = [
-    Executable('turtl-backup-gui.py', base=base)
-]
 
 setup(
     name='turtl-backup',
-    options={'build_exe': buildOptions},
-    executables=executables,
     version='0.0.4',
     description="Tool to backup a turtl account.",
     long_description=readme,

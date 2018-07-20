@@ -23,6 +23,7 @@ class Turtl:
     """Mimics the turtl logic, with the ability to load from an encrypted
     json backup, and dumps to a file hierarchy.
     """
+
     def __init__(self, records, master_key=''):
         self.master_key = master_key
         self.records_by_type = defaultdict(dict)
