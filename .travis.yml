@@ -3,4 +3,4 @@ python: 3.6
 install:
   - pip install detox
 script:
-  - detox
+  - detox -v
