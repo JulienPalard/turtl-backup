@@ -1,5 +1,7 @@
 """Here's a graphical user interface for the turtl-backup tool.
 """
+# Pylint whining about tk having a too-deep hierachy:
+# pylint: disable=too-many-ancestors
 
 import os
 import tkinter as tk
