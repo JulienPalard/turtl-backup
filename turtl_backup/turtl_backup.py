@@ -172,7 +172,7 @@ def main() -> None:
     if action == "get_auth_token":
         get_auth_token()
     elif action == "decrypt":
-        decrypt(args)
+        decrypt(args.backup_file, args.backup_directory)
     elif action == "backup":
         backup(args.json_dest_file, args.server, args.auth_token)
     elif action == "export":
