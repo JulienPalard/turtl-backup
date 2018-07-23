@@ -2,7 +2,8 @@ Turtl Backup
 ============
 
 This program permits to download a whole turtl account for offline
-backuping, and optionally decrypt the backup file.
+backuping, and optionally decrypt the backup file, then optionally
+export the decrypted file to markdown.
 
 
 Installation
@@ -40,9 +41,32 @@ optional arguments:
 -h, --help            show this help message and exit
 ```
 
-So typically:
+So typically to create an encrypted backup:
 ```bash
-turtl-backup backup https://api.framanotes.org backup.json
+$ turtl-backup backup https://api.framanotes.org backup.json
+username: test
+password:
+```
+
+To decrypt a backup:
+```bash
+$ turtl-backup decrypt backup.json backup/
+username: test
+password:
+```
+
+To export a decrypted backup to markdown:
+```bash
+$ turtl-backup export backup/ backup-md/
+$ cat backup-md/Hello.md
+type: text
+title: Hello
+tags: []
+url: None
+username: None
+password: None
+
+world
 ```
 
 FAQ
