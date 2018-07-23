@@ -3,6 +3,7 @@
 Backups are downloaded encrypted so they can be archived safely.
 """
 
+import argparse
 import json
 import os
 from base64 import b64encode
@@ -17,10 +18,9 @@ from turtl_backup import tcrypt
 from turtl_backup.turtl import Turtl
 
 
-def parse_args():
+def parse_args() -> argparse.Namespace:
     """Parses command line arguments.
     """
-    import argparse
 
     parser = argparse.ArgumentParser(description="Backup a turtl account.")
     subparsers = parser.add_subparsers(
@@ -65,19 +65,19 @@ def parse_args():
     return args
 
 
-def get_key(username, password):
+def get_key(username: str, password: str) -> bytes:
     """Build the symmetric encryption key with the given user and passord.
     """
     return pbkdf2_hmac(
         "sha256",
-        password.encode(),
-        sha256(username.encode()).hexdigest().encode(),
+        password.encode("utf8"),
+        sha256(username.encode("utf8")).hexdigest().encode("utf8"),
         100000,
         32,
     )
 
 
-def get_auth(username, password, version=tcrypt.VERSION):
+def get_auth(username: str, password: str, version=tcrypt.VERSION) -> bytes:
     """Get a authorization token for the given username and
     password, which is:
 
@@ -101,17 +101,20 @@ def get_auth(username, password, version=tcrypt.VERSION):
     return b64encode(formatted + cipher + tag)
 
 
-def build_basic_auth(auth_token):
+def build_basic_auth(auth_token: bytes) -> str:
     """Forge a basic auth header from a turtl auth token.
     """
     return "Basic " + b64encode(b"user:" + auth_token).decode()
 
 
-def get_auth_token():
+def get_auth_token() -> None:
+    """Interactively ask a user for a username and password, prints an
+    auth token.
+    """
     print(get_auth(input("username: "), getpass("password: ")).decode())
 
 
-def decrypt(args):
+def decrypt(args) -> None:
     turtl = Turtl.from_file(args.backup_file)
     user = input("username: ")
     password = getpass("password: ")
@@ -123,14 +126,16 @@ def decrypt(args):
         print(e)
 
 
-def fetch_backup(auth, server, path="sync/full"):
+def fetch_backup(
+    auth: bytes, server: str, path: str = "sync/full"
+) -> requests.Response:
     basic_auth = build_basic_auth(auth)
     url = urljoin(server, path)
     headers = {"Authorization": basic_auth}
     return requests.get(url, headers=headers)
 
 
-def backup(args):
+def backup(args) -> None:
     if args.auth_token:
         auth = args.auth_token.encode()
     else:
@@ -140,7 +145,7 @@ def backup(args):
         dest.write(response.text)
 
 
-def to_markdown(backup_directory, export_directory):
+def to_markdown(backup_directory: str, export_directory: str) -> None:
     """Converts turtl backup json files from backup_directory to markdown
     in export_directory.
     """
@@ -158,7 +163,7 @@ def to_markdown(backup_directory, export_directory):
                 md_note.write(json_note["text"])
 
 
-def main():
+def main() -> None:
     """Module entry point.
     """
     args = parse_args()
