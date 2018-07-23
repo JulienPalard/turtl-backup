@@ -121,11 +121,7 @@ def decrypt(backup_file: str, decrypt_directory: str) -> None:
     user = input("username: ")
     password = getpass("password: ")
     turtl.master_key = get_key(user, password)
-    try:
-        turtl.save_all_notes(decrypt_directory)
-    except Exception as e:
-        print("Cannot decrypt :(")
-        print(e)
+    turtl.save_all_notes(decrypt_directory)
 
 
 def fetch_backup(
