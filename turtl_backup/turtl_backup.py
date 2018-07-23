@@ -127,6 +127,8 @@ def decrypt(backup_file: str, decrypt_directory: str) -> None:
 def fetch_backup(
     auth: bytes, server: str, path: str = "sync/full"
 ) -> requests.Response:
+    """Download a backup from server using auth.
+    """
     basic_auth = build_basic_auth(auth)
     url = urljoin(server, path)
     headers = {"Authorization": basic_auth}
