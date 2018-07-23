@@ -33,6 +33,14 @@ def parse_args() -> argparse.Namespace:
     get_auth_token_parser = subparsers.add_parser(
         "get_auth_token", help="Get a turtl auth token"
     )
+    get_auth_token_parser.add_argument(
+        "--login", help="Login (asked interactively if not given)"
+    )
+    get_auth_token_parser.add_argument(
+        "--password",
+        help="Password (asked interactively if not given, which is more secure than "
+        "having your password in your bash history.)",
+    )
     get_auth_token_parser.set_defaults(subparser="get_auth_token")
     backup_parser.add_argument(
         "--auth-token", help="Use this auth token, instead of typing login/password."
@@ -41,7 +49,8 @@ def parse_args() -> argparse.Namespace:
         "server", help="Your turtle server API, " 'like "https://api.framanotes.org"'
     )
     backup_parser.add_argument(
-        "json_dest_file", help="Destination file, where your notes will be stored encrypted"
+        "json_dest_file",
+        help="Destination file, where your notes will be stored encrypted",
     )
     decrypt_parser = subparsers.add_parser(
         "decrypt", help="Decrypt all notes in the given directory."
@@ -49,6 +58,14 @@ def parse_args() -> argparse.Namespace:
     decrypt_parser.add_argument("backup_file", help="Backup file to decrypt.")
     decrypt_parser.add_argument(
         "decrypt_directory", help="Root directory for decrypted notes"
+    )
+    decrypt_parser.add_argument(
+        "--login", help="Login (asked interactively if not given)"
+    )
+    decrypt_parser.add_argument(
+        "--password",
+        help="Password (asked interactively if not given, which is more secure than "
+        "having your password in your bash history.)",
     )
     decrypt_parser.set_defaults(subparser="decrypt")
     export = subparsers.add_parser("export", help="Export all notes to markdown.")
@@ -107,19 +124,21 @@ def build_basic_auth(auth_token: bytes) -> str:
     return "Basic " + b64encode(b"user:" + auth_token).decode()
 
 
-def get_auth_token() -> None:
+def get_auth_token(login: str = None, password: str = None) -> bytes:
     """Interactively ask a user for a username and password, prints an
     auth token.
     """
-    print(get_auth(input("username: "), getpass("password: ")).decode())
+    return get_auth(login or input("username: "), password or getpass("password: "))
 
 
-def decrypt(backup_file: str, decrypt_directory: str) -> None:
+def decrypt(
+    backup_file: str, decrypt_directory: str, login: str, password: str
+) -> None:
     """Decrypt a given json file to a directory.
     """
     turtl = Turtl.from_file(backup_file)
-    user = input("username: ")
-    password = getpass("password: ")
+    user = login or input("username: ")
+    password = password or getpass("password: ")
     turtl.master_key = get_key(user, password)
     turtl.save_all_notes(decrypt_directory)
 
@@ -154,7 +173,7 @@ def to_markdown(backup_directory: str, export_directory: str) -> None:
     """
     os.makedirs(export_directory, mode=0o700, exist_ok=True)
     for note_path in Path(backup_directory).glob("*.json"):
-        with open(note_path) as note:
+        with open(str(note_path)) as note:
             json_note = json.load(note)
             filename = json_note["title"].replace("/", "-") + ".md"
             with open(os.path.join(export_directory, filename), "w") as md_note:
@@ -172,9 +191,9 @@ def main() -> None:
     args = parse_args()
     action = args.subparser
     if action == "get_auth_token":
-        get_auth_token()
+        print(get_auth_token(args.login, args.password).decode())
     elif action == "decrypt":
-        decrypt(args.backup_file, args.decrypt_directory)
+        decrypt(args.backup_file, args.decrypt_directory, args.login, args.password)
     elif action == "backup":
         backup(args.json_dest_file, args.server, args.auth_token)
     elif action == "export":
