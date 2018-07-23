@@ -41,7 +41,7 @@ def parse_args() -> argparse.Namespace:
         "server", help="Your turtle server API, " 'like "https://api.framanotes.org"'
     )
     backup_parser.add_argument(
-        "dest", help="Destination file, where your notes will be stored encrypted"
+        "json_dest_file", help="Destination file, where your notes will be stored encrypted"
     )
     decrypt_parser = subparsers.add_parser(
         "decrypt", help="Decrypt all notes in the given directory."
@@ -114,13 +114,15 @@ def get_auth_token() -> None:
     print(get_auth(input("username: "), getpass("password: ")).decode())
 
 
-def decrypt(args) -> None:
-    turtl = Turtl.from_file(args.backup_file)
+def decrypt(backup_file: str, decrypt_directory: str) -> None:
+    """Decrypt a given json file to a directory.
+    """
+    turtl = Turtl.from_file(backup_file)
     user = input("username: ")
     password = getpass("password: ")
     turtl.master_key = get_key(user, password)
     try:
-        turtl.save_all_notes(args.decrypt_directory)
+        turtl.save_all_notes(decrypt_directory)
     except Exception as e:
         print("Cannot decrypt :(")
         print(e)
@@ -135,13 +137,16 @@ def fetch_backup(
     return requests.get(url, headers=headers)
 
 
-def backup(args) -> None:
-    if args.auth_token:
-        auth = args.auth_token.encode()
+def backup(json_dest_file: str, server: str, auth_token: str = None) -> None:
+    """Backup a turtl backup (interactively asking for login/password if
+    not given an auth token).
+    """
+    if auth_token:
+        auth = auth_token.encode()
     else:
         auth = get_auth(input("username: "), getpass("password: "))
-    response = fetch_backup(auth, args.server)
-    with open(args.dest, "w") as dest:
+    response = fetch_backup(auth, server)
+    with open(json_dest_file, "w") as dest:
         dest.write(response.text)
 
 
@@ -173,7 +178,7 @@ def main() -> None:
     elif action == "decrypt":
         decrypt(args)
     elif action == "backup":
-        backup(args)
+        backup(args.json_dest_file, args.server, args.auth_token)
     elif action == "export":
         to_markdown(args.backup_directory, args.export_directory)
 
