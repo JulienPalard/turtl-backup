@@ -26,29 +26,31 @@ def parse_args():
     subparsers = parser.add_subparsers(
         help="Backup can be done with a login/password pair or " "using an auth token."
     )
-    backup = subparsers.add_parser(
+    backup_parser = subparsers.add_parser(
         "backup", help="Backup a turtl account (with a password or an auth token)"
     )
-    backup.set_defaults(subparser="backup")
-    get_auth_token = subparsers.add_parser(
+    backup_parser.set_defaults(subparser="backup")
+    get_auth_token_parser = subparsers.add_parser(
         "get_auth_token", help="Get a turtl auth token"
     )
-    get_auth_token.set_defaults(subparser="get_auth_token")
-    backup.add_argument(
+    get_auth_token_parser.set_defaults(subparser="get_auth_token")
+    backup_parser.add_argument(
         "--auth-token", help="Use this auth token, instead of typing login/password."
     )
-    backup.add_argument(
+    backup_parser.add_argument(
         "server", help="Your turtle server API, " 'like "https://api.framanotes.org"'
     )
-    backup.add_argument(
+    backup_parser.add_argument(
         "dest", help="Destination file, where your notes will be stored encrypted"
     )
-    decrypt = subparsers.add_parser(
+    decrypt_parser = subparsers.add_parser(
         "decrypt", help="Decrypt all notes in the given directory."
     )
-    decrypt.add_argument("backup_file", help="Backup file to decrypt.")
-    decrypt.add_argument("decrypt_directory", help="Root directory for decrypted notes")
-    decrypt.set_defaults(subparser="decrypt")
+    decrypt_parser.add_argument("backup_file", help="Backup file to decrypt.")
+    decrypt_parser.add_argument(
+        "decrypt_directory", help="Root directory for decrypted notes"
+    )
+    decrypt_parser.set_defaults(subparser="decrypt")
     export = subparsers.add_parser("export", help="Export all notes to markdown.")
     export.add_argument(
         "backup_directory",
