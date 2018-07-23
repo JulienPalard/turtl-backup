@@ -159,7 +159,7 @@ def to_markdown(backup_directory: str, export_directory: str) -> None:
                 for key, value in json_note.items():
                     if key == "text":
                         continue
-                    md_note.write(f"{key}: {value}\n")
+                    md_note.write("{key}: {value}\n".format(key=key, value=value))
                 md_note.write("\n")
                 md_note.write(json_note["text"])
 
